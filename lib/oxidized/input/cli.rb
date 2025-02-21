@@ -44,7 +44,7 @@ module Oxidized
         @pre_logout << [cmd, block]
       end
 
-      def username(regex = /^(Username|login)/)
+      def username(regex = /^([Uu]ser\s*[Nn]ame|login)/)
         @username || (@username = regex)
       end
 
