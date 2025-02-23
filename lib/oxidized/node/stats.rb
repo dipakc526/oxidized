@@ -88,7 +88,7 @@ module Oxidized
       def history_dir
         # Extract the string path if Oxidized.config.history_dir is an object
         dir = Oxidized.config.history_dir
-        dir.respond_to?(:to_s) ? dir.to_s : "/path/to/default/history_dir"  # Ensure it's a string
+        dir.respond_to?(:to_s) ? dir.to_s : "/home/oxidized/.config/oxidized"  # Ensure it's a string
       end
     end
   end
