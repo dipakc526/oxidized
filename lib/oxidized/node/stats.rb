@@ -57,7 +57,7 @@ module Oxidized
         @history_size = Oxidized.config.stats.history_size? || MAX_STAT
         @mtimes = Array.new(@history_size, "unknown")
         @stats  = {}
-        @stats[:counter] = Hash.new 0
+        @stats[:counter] = Hash.new(0)
         load_from_file  # Load stats from the file (if available) during initialization
       end
 
@@ -86,7 +86,9 @@ module Oxidized
 
       # The history_dir variable for the stats file location
       def history_dir
-        Oxidized.config.history_dir || "/home/oxidized/.config/oxidized"  # Use a default path if not set
+        # Extract the string path if Oxidized.config.history_dir is an object
+        dir = Oxidized.config.history_dir
+        dir.respond_to?(:to_s) ? dir.to_s : "/path/to/default/history_dir"  # Ensure it's a string
       end
     end
   end
