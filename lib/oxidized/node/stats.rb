@@ -7,6 +7,7 @@ module Oxidized
       attr_reader :mtimes
 
       MAX_STAT = 10
+      HIST_DIR = "/home/oxidized/.config/oxidized"
 
       # @param [Job] job job whose information is added to stats
       # @return [void]
@@ -55,6 +56,7 @@ module Oxidized
 
       def initialize
         @history_size = Oxidized.config.stats.history_size? || MAX_STAT
+        @history_dir = Oxidized.config.stats.history_dir? || HIST_DIR
         @mtimes = Array.new(@history_size, "unknown")
         @stats  = {}
         @stats[:counter] = Hash.new(0)
@@ -64,9 +66,8 @@ module Oxidized
       # Save the current stats to a JSON file in the specified directory
       def save_to_file
         # Ensure the directory exists
-        FileUtils.mkdir_p(history_dir) unless Dir.exist?(history_dir)
 
-        stats_file = File.join(history_dir, "stats.json")
+        stats_file = File.join(@history_dir, "stats.json")
         File.open(stats_file, 'w') do |f|
           f.write(@stats.to_json)
         end
@@ -74,7 +75,7 @@ module Oxidized
 
       # Load stats from a JSON file (if the file exists)
       def load_from_file
-        stats_file = File.join(history_dir, "stats.json")
+        stats_file = File.join(@history_dir, "stats.json")
         return unless File.exist?(stats_file)
 
         file_data = File.read(stats_file)
@@ -82,13 +83,6 @@ module Oxidized
       rescue JSON::ParserError
         puts "Error parsing stats file, using default stats."
         @stats = { counter: Hash.new(0) }  # Reset to default if parsing fails
-      end
-
-      # The history_dir variable for the stats file location
-      def history_dir
-        # Extract the string path if Oxidized.config.history_dir is an object
-        dir = Oxidized.config.history_dir
-        dir.respond_to?(:to_s) ? dir.to_s : "/home/oxidized/.config/oxidized"  # Ensure it's a string
       end
     end
   end
